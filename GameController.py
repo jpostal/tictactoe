@@ -47,6 +47,8 @@ class GameController(metaclass=GameControllerMeta):
         print("Player %s starts" % str(self.__first))
 
     def get_player_turn(self):
+
+        # TODO: Could this be better?
         if not self.__current_turn: # null test, means new game
             self.__current_turn = self.__first
 
