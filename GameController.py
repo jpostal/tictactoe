@@ -22,8 +22,9 @@ class GameControllerMeta(type):
 
 class GameController(metaclass=GameControllerMeta):
 
-    __players = {"player_1": "X", "player_2": "0"}
-    __first = {}
+    __players = ["X", "0"]
+    __first = ""
+    __current_turn = {}
     __game_matrix = []
     __game_over = False
 
@@ -35,20 +36,27 @@ class GameController(metaclass=GameControllerMeta):
         self.__game_matrix = [['_' for _ in range(dimension)] for _ in range(dimension)]
 
     def __set_players_order(self):
-        player_scores = []
+        player_scores = {}
 
-        for i in range(len(self.__players)):
-            input("Player %s press enter to roll dice." % (i + 1))
-            player_scores.append(random.randint(0, 10))
-            print(player_scores[i])
+        for player in self.__players:
+            input("Player %s press enter to roll dice." % (player))
+            player_scores[player] = random.randint(1, 10)
+            print(player_scores[player])
 
-        # TODO: Lazy solution...
-        if player_scores[0] > player_scores[1]:
-            self.__first = self.__players['player_1']
-            print("Player 1 Starts")
-        else:
-            self.__first = self.__players['player_2']
-            print("Player 2 Starts")
+        self.__first = max(player_scores, key=lambda key: player_scores[key]) # getting biggest score
+        print("Player %s starts" % str(self.__first))
+
+    def get_player_turn(self):
+        if not self.__current_turn: # null test, means new game
+            self.__current_turn = self.__first
+
+        elif self.__current_turn == self.__players[0]:
+            self.__current_turn = self.__players[1]
+
+        elif self.__current_turn == self.__players[1]:
+            self.__current_turn = self.__players[0]
+
+        return self.__current_turn
 
     def get_matrix(self):
         return self.__game_matrix
