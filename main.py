@@ -38,11 +38,14 @@ class MainController(object):
     def main(self):
         # TODO: Loop to control turns and end game.
 
-        self.__current_player = self.__gc.get_player_turn()
-        print("its %s turn now" % str(self.__current_player))
-
-        self.__request_player_position_input()
+        # self.__current_player = self.__gc.get_player_turn()
+        # print("its %s turn now" % str(self.__current_player))
+        #
+        # self.__request_player_position_input()
+        # self.__gc.print_matrix()
+        self.__gc.set_hcoded_player_move()
         self.__gc.print_matrix()
+        self.__gc.game_over_test()
 
 
 if __name__ == '__main__':
