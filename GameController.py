@@ -66,7 +66,7 @@ class GameController(metaclass=GameControllerMeta):
         return self.__game_matrix
 
     def assign_player_move(self, player, line_pos, col_pos):
-        self.__game_matrix[col_pos][line_pos] = self.__players[player]
+        self.__game_matrix[line_pos][col_pos] = self.__players[player]
 
     def print_matrix(self):
         print(f"%s" % np.array2string(self.__game_matrix).replace("1", "O").replace("2", "X").replace("0", "_"))
@@ -81,20 +81,34 @@ class GameController(metaclass=GameControllerMeta):
         winner = []
 
         # TODO: Improve these conditions and test diagonal matches
-        for i in range(self.__dimension):
-            line = np.array(self.__game_matrix[i, :])
-            column = np.array(self.__game_matrix[:, i])
-            if column.all(axis=0):
-                winner = [x for x in self.__players.keys() if self.__players[x] == column[0]]
-                print(f"{bc.OKBLUE}%s{bc.ENDC}" % column.reshape(self.__dimension, 1))
 
-            elif line.all(axis=0):
-                winner = [x for x in self.__players.keys() if self.__players[x] == line[0]]
-                print(f"{bc.OKBLUE}%s{bc.ENDC}" % line.reshape(1, self.__dimension))
+        main_diagonal = np.diag(self.__game_matrix)
+        secondary_diagonal = np.diag(np.fliplr(self.__game_matrix))
+
+        # Testing diagonals
+        if main_diagonal.all(axis=0):
+            winner = [x for x in self.__players.keys() if self.__players[x] == main_diagonal[0]]
+            print(f"{bc.OKBLUE}%s\n  %s\n    %s{bc.ENDC}" % (main_diagonal[0], main_diagonal[1], main_diagonal[2]))
+        elif secondary_diagonal.all(axis=0):
+            winner = [x for x in self.__players.keys() if self.__players[x] == secondary_diagonal[0]]
+        else:
+            # Testing lines and columns
+            for i in range(self.__dimension):
+                line = np.array(self.__game_matrix[i, :])
+                column = np.array(self.__game_matrix[:, i])
+
+                if column.all(axis=0):
+                    winner = [x for x in self.__players.keys() if self.__players[x] == column[0]]
+                    print(f"{bc.OKBLUE}%s{bc.ENDC}" % column.reshape(self.__dimension, 1))
+
+                elif line.all(axis=0):
+                    winner = [x for x in self.__players.keys() if self.__players[x] == line[0]]
+                    print(f"{bc.OKBLUE}%s{bc.ENDC}" % line.reshape(1, self.__dimension))
+
         if winner:
             print("Player %s Won!" % winner)
 
     def set_hcoded_player_move(self):
-        self.assign_player_move('X', 0, 0)
-        self.assign_player_move('X', 1, 0)
-        self.assign_player_move('X', 2, 0)
+        self.assign_player_move('O', 0, 0)
+        self.assign_player_move('O', 0, 1)
+        self.assign_player_move('O', 0, 2)
